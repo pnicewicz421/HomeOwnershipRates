@@ -1,0 +1,58 @@
+---
+title: "Homeownership Rates"
+date: 11/15/2017
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Homeownership Rates
+
+One measure that assesses the strength of the housing market is homeownership rates, which can be defined as the proportion of all households in the nation that are owner-occupied. 
+
+This plot shows homeownership rates by race since 1994 until 2016.
+
+While homeownership rates have increased steadily until 2004, the began falling prior to the beginning of the Great Recession. In 2016, the trend has begun to increase again.
+
+While this pattern is true for the entire population in the U.S., the breakdown of the data by race shows sever disparities in homeownership. 
+
+## Load and Process the Data
+
+```{r echo = TRUE, eval=TRUE, results="hide", message=FALSE, warning=FALSE}
+library(dmm)
+
+home <- read.csv("HomeownershipByRace.csv")
+home <- as.data.frame(t(home))
+home <- home[-1,]
+colnames(home) <- c("U.S. total", "White", "Black", "American Indian or Alaskan Native", "Asian or Native Hawaiian/Pacific Islander","Hispanic or Latino", "Non-Hispanic")
+rownames(home) <- seq(1994, 2016)
+home$`U.S. total`<- unfactor(home$`U.S. total`)
+home$White <- unfactor(home$White)
+home$Black <- unfactor(home$Black)
+home$`American Indian or Alaskan Native` <- unfactor(home$`American Indian or Alaskan Native`)
+home$`Asian or Native Hawaiian/Pacific Islander` <- unfactor(home$`Asian or Native Hawaiian/Pacific Islander`)
+home$`Hispanic or Latino` <- unfactor(home$`Hispanic or Latino`)
+home$`Non-Hispanic` <- unfactor(home$`Non-Hispanic`)
+```
+
+## Show the Plotly Code
+```{r echo = TRUE, eval=TRUE, results="hide", message=FALSE, warning=FALSE}
+library(plotly)
+
+p <- plot_ly(data=home, x=as.integer(rownames(home))) %>%
+  add_trace(y=home$`U.S. total`, name="U.S. Total", type='scatter', mode='lines') %>%
+  add_trace(y=home$White, name='White', type='scatter', mode='lines') %>%
+  add_trace(y=home$Black, name='Black', type='scatter', mode='lines') %>%
+  add_trace(y=home$`American Indian or Alaskan Native`, name='American Indian or Alaskan Native', type='scatter', mode='lines') %>%
+  add_trace(y=home$`Asian or Native Hawaiian/Pacific Islander`, name='Asian or Native Hawaiian/Pacific Islander', type='scatter', mode='lines') %>%
+  add_trace(y=home$`Hispanic or Latino`, name='Hispanic or Latino', type='scatter', mode='lines') %>%
+  add_trace(y=home$`Non-Hispanic`, name='Non-Hispanic', type='scatter', mode='lines') %>%
+  layout(title="Homeownership Rates by Race, 1994-2016", xaxis=list(title="Year"), yaxis=list(title="Percentage"))
+```
+
+## The Actual Plot
+```{r echo = FALSE}
+p
+```
